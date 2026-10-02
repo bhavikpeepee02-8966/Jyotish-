@@ -1,1 +1,43 @@
-
+name: Build APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Prepare Capacitor project
+        run: |
+          mkdir -p www
+          cp index.html www/index.html
+          npm init -y
+          npm i @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
+          cat > capacitor.config.json <<'CFG'
+          {
+            "appId": "com.bhavik.gochar",
+            "appName": "ગ્રહ ગોચર",
+            "webDir": "www"
+          }
+          CFG
+          npx cap add android
+          npx cap sync android
+      - name: Fixed signing key (same key every build)
+        run: |
+          mkdir -p ~/.android
+          echo "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" | base64 -d > ~/.android/debug.keystore
+      - name: Build APK
+        run: cd android && ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gochar-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          

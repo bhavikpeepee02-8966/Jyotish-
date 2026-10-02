@@ -1,0 +1,575 @@
+<!DOCTYPE html><html lang="gu"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00695c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="ગ્રહ ગોચર">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>ગ્રહ ગોચર</title>
+<style>
+:root{
+  --primary:#00695c;--primary-light:#00897b;--primary-dark:#004d40;
+  --accent:#ffb300;--bg:#e0f2f1;--card:#ffffff;--text:#212121;
+  --shadow:0 4px 12px rgba(0,0,0,.08);--radius:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);padding-bottom:20px}
+header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;padding:16px 14px;font-size:22px;font-weight:600;
+  position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.15);
+  display:flex;align-items:center;gap:8px;
+}
+header span{font-size:28px}
+.c{background:var(--card);margin:10px;padding:14px;border-radius:var(--radius);box-shadow:var(--shadow)}
+h3{color:var(--primary);margin:0 0 10px;padding-bottom:6px;border-bottom:2px solid #b2dfdb;font-size:17px;display:flex;align-items:center;gap:6px}
+select,input,button{font-size:16px;padding:10px;border-radius:12px;border:1px solid #cfd8dc;margin:4px 0;width:100%;background:#fafafa;font-family:inherit}
+select:focus,input:focus{outline:2px solid var(--primary-light);border-color:transparent}
+button{background:var(--primary);color:#fff;border:0;width:auto;margin:3px 2px;font-weight:500;transition:.2s;cursor:pointer}
+button:active{transform:scale(.97)}
+button.r{background:#e53935}button.g{background:#78909c}
+.row{display:flex;gap:6px;flex-wrap:wrap}.row>*{flex:1}
+.pl{border-radius:14px;margin:10px 0;overflow:hidden;border:1px solid #e0e0e0;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.ph{background:linear-gradient(135deg,#e0f2f1,#b2dfdb);padding:10px 12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:15px}
+.pb{padding:10px 12px;font-size:14px;line-height:1.6}
+.bar{background:#e0e0e0;height:8px;border-radius:6px;overflow:hidden;margin:4px 0}
+.bar i{display:block;height:8px;background:linear-gradient(90deg,var(--primary-light),var(--primary));border-radius:6px}
+#out.fg .bd,#out.fb .gd{display:none}
+.G{color:#2e7d32;font-weight:600}.B{color:#d32f2f;font-weight:600}
+.Y{color:#f57f17;font-weight:600}
+.dt{display:none;background:#f5fbfa;padding:10px;margin-top:8px;border-radius:10px;font-size:14px;border-left:4px solid var(--primary-light)}
+#m{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;overflow:auto;backdrop-filter:blur(2px)}
+#m>div{background:#fff;margin:30px 14px;padding:18px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.3);animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+table{border-collapse:collapse;width:100%;font-size:13px;border-radius:10px;overflow:hidden}
+th,td{border:1px solid #e0e0e0;padding:6px 8px;text-align:left}
+th{background:#e0f2f1;color:var(--primary-dark);font-weight:600}
+tr:nth-child(even){background:#f9fdfc}
+#nat{font-size:15px;line-height:1.7;background:#f1f8f7;padding:10px;border-radius:12px;margin-top:8px}
+#sum button{font-size:15px;padding:8px}
+.sunbox{background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:10px;border-radius:12px;margin-bottom:8px;line-height:1.8}
+.tabs button{flex:1}.tabs .on{background:var(--primary-dark)}
+.footer{text-align:center;font-size:12px;color:#78909c;padding:10px}
+.pan-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;padding-bottom:6px;border-bottom:2px solid #b2dfdb}
+.pan-head h3{margin:0;padding:0;border:0;flex:1}
+.pan-head .arrow{font-size:18px;color:var(--primary);transition:transform .25s;background:#e0f2f1;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.pan-body{display:none;margin-top:10px}
+.pan-body.open{display:block}
+.pan-head.open .arrow{transform:rotate(180deg)}
+.now-box{background:linear-gradient(135deg,#c8e6c9,#a5d6a7);padding:10px 12px;border-radius:12px;margin-bottom:10px;border-left:5px solid #2e7d32;line-height:1.8;box-shadow:0 2px 6px rgba(46,125,50,.2)}
+.now-box .title{font-weight:700;color:#1b5e20;font-size:15px;margin-bottom:4px}
+.now-box .item{font-size:14px}
+.now-box .badge{display:inline-block;background:#2e7d32;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-left:4px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+tr.now-row{background:#c8e6c9 !important;font-weight:bold;box-shadow:inset 4px 0 0 #2e7d32}
+tr.now-row td:first-child{color:#1b5e20}
+.yatra-good{color:#2e7d32;font-weight:600}
+.yatra-bad{color:#d32f2f;font-weight:600}
+.yatra-mid{color:#f57f17;font-weight:600}
+.empty-msg{text-align:center;padding:20px;color:#78909c;font-size:15px;line-height:1.8}
+.empty-msg .big{font-size:48px;margin-bottom:10px}
+</style></head><body>
+
+<header><span>🕉️</span> ગ્રહ ગોચર</header>
+
+<div class="c">
+  <div class="pan-head" id="panHead" onclick="togglePan()">
+    <h3>📅 આજનું પંચાંગ</h3>
+    <div class="arrow">▼</div>
+  </div>
+  <div class="pan-body" id="panBox"><div id="pan"></div></div>
+</div>
+
+<div class="c"><h3>👤 પ્રોફાઇલ</h3>
+  <select id="ps"></select>
+  <div class="row">
+    <button onclick="openF(0)">➕ નવી</button>
+    <button class="g" onclick="openF(1)">✏️ સુધારો</button>
+    <button class="r" onclick="del()">🗑️ ડિલીટ</button>
+  </div>
+  <div id="nat"></div>
+  <div class="row" style="margin-top:8px">
+    <button class="g" onclick="bk()">💾 બેકઅપ</button>
+    <button class="g" onclick="document.getElementById('rf').click()">📂 પાછું લાવો</button>
+  </div>
+  <input type="file" id="rf" accept=".json,application/json" style="display:none" onchange="rs(this)">
+</div>
+
+<div class="c"><h3>⚙️ ગોચર વિકલ્પ</h3>
+  <input type="datetime-local" id="dt" onchange="go()">
+  <div class="row tabs">
+    <button id="t0" onclick="ref=0;go()">લગ્ન પરથી</button>
+    <button id="t1" onclick="ref=1;go()">ચંદ્ર રાશિ પરથી</button>
+  </div>
+  <button class="g" onclick="now()" style="width:100%">🕒 હમણાંનો સમય</button>
+</div>
+
+<div class="c"><h3>🔮 ગ્રહ ગોચર</h3>
+  <div class="row tabs">
+    <button id="tm" onclick="T=0;go()">મુખ્ય ગોચર</button>
+    <button id="tn" onclick="T=1;go()">નાના ગોચર</button>
+  </div>
+  <div id="sum"></div>
+  <div id="out"></div>
+</div>
+
+<div class="c"><h3>📊 જન્મકુંડળી</h3><div id="ch" style="text-align:center"></div></div>
+
+<div class="c"><h3>🔱 સાડાસાતી / પનોતી</h3><div id="ss"></div></div>
+
+<div class="c"><h3>⏳ વિંશોત્તરી દશા</h3><div id="ds"></div></div>
+
+<div class="footer">🙏 જ્યોતિષ માર્ગદર્શન માટે • નિષ્ણાતની સલાહ લો</div>
+
+<div id="m"><div>
+  <h3 id="ft">પ્રોફાઇલ</h3>
+  <input id="fn" placeholder="નામ">
+  <input type="date" id="fd">
+  <input type="time" id="fti">
+  <select id="fc" onchange="city()"></select>
+  <div class="row">
+    <input id="fla" placeholder="અક્ષાંશ" inputmode="decimal">
+    <input id="flo" placeholder="રેખાંશ" inputmode="decimal">
+  </div>
+  <input id="ftz" placeholder="ટાઇમ ઝોન (ભારત 5.5)" inputmode="decimal" value="5.5">
+  <div class="row" style="margin-top:8px">
+    <button onclick="save()">💾 સેવ</button>
+    <button class="g" onclick="document.getElementById('m').style.display='none'">❌ રદ</button>
+  </div>
+</div></div>
+
+<script>
+function togglePan(){
+  const box = document.getElementById('panBox');
+  const head = document.getElementById('panHead');
+  const open = box.classList.toggle('open');
+  head.classList.toggle('open', open);
+}
+setTimeout(()=>{
+  const box = document.getElementById('panBox');
+  const head = document.getElementById('panHead');
+  box.classList.add('open'); head.classList.add('open');
+}, 100);
+
+const R=Math.PI/180,n360=x=>((x%360)+360)%360,S=x=>Math.sin(x*R),C=x=>Math.cos(x*R);
+const RA="મેષ,વૃષભ,મિથુન,કર્ક,સિંહ,કન્યા,તુલા,વૃશ્ચિક,ધન,મકર,કુંભ,મીન".split(","),
+NK="અશ્વિની,ભરણી,કૃત્તિકા,રોહિણી,મૃગશીર્ષ,આર્દ્રા,પુનર્વસુ,પુષ્ય,આશ્લેષા,મઘા,પૂર્વાફાલ્ગુની,ઉત્તરાફાલ્ગુની,હસ્ત,ચિત્રા,સ્વાતિ,વિશાખા,અનુરાધા,જ્યેષ્ઠા,મૂળ,પૂર્વાષાઢા,ઉત્તરાષાઢા,શ્રવણ,ધનિષ્ઠા,શતભિષા,પૂર્વાભાદ્રપદ,ઉત્તરાભાદ્રપદ,રેવતી".split(","),
+HM=["શરીર, સ્વભાવ, સ્વાસ્થ્ય","ધન, કુટુંબ, વાણી","હિંમત, ભાઈ-બહેન, પ્રયાસ","સુખ, માતા, વાહન-મકાન","સંતાન, અભ્યાસ, બુદ્ધિ","રોગ, શત્રુ, દેવું","લગ્નજીવન, ભાગીદારી","આયુષ્ય, અચાનક ખર્ચ-ઘટના","ભાગ્ય, ધર્મ, પિતા","કર્મ, નોકરી-વ્યવસાય","લાભ, આવક, મિત્રો","ખર્ચ, વ્યય, વિદેશ, ઊંઘ"],
+P=[["☀️","સૂર્ય",[3,6,10,11],"રવિવારે સૂર્યને જળ ચડાવો, 'ૐ સૂર્યાય નમઃ' જપ, ગોળ-ઘઉંનું દાન"],
+["🌙","ચંદ્ર",[1,3,6,7,10,11],"સોમવારે શિવજીને દૂધ-જળ, 'ૐ સોમાય નમઃ' જપ, ચોખા-દૂધનું દાન"],
+["🔥","મંગળ",[3,6,11],"મંગળવારે હનુમાન ચાલીસા, 'ૐ અંગારકાય નમઃ' જપ, મસૂર-ગોળનું દાન"],
+["💚","બુધ",[2,4,6,8,10,11],"બુધવારે ગણપતિ પૂજા, 'ૐ બુધાય નમઃ' જપ, મગ-લીલા શાકનું દાન"],
+["🌟","ગુરુ",[2,5,7,9,11],"ગુરુવારે વિષ્ણુ પૂજા, 'ૐ બૃહસ્પતયે નમઃ' જપ, ચણાદાળ-પીળા વસ્ત્રનું દાન, વડીલોનો આદર"],
+["💎","શુક્ર",[1,2,3,4,5,8,9,11,12],"શુક્રવારે લક્ષ્મી પૂજા, 'ૐ શુક્રાય નમઃ' જપ, દહીં-ચોખા-સફેદ વસ્ત્રનું દાન"],
+["⚫","શનિ",[3,6,11],"શનિવારે હનુમાન/શનિ મંદિર, 'ૐ શનૈશ્ચરાય નમઃ' જપ, તેલ-કાળા તલ-અડદનું દાન, શ્રમિકોની મદદ"],
+["🌑","રાહુ",[3,6,10,11],"'ૐ રાં રાહવે નમઃ' જપ, શનિવારે નાળિયેર/કાળા તલનું દાન, દુર્ગા ઉપાસના"],
+["🌘","કેતુ",[3,6,11],"'ૐ કેં કેતવે નમઃ' જપ, ગણપતિ પૂજા, કૂતરાને રોટલી"]];
+const X=[["માન-સન્માન, સરકારી કામ, આત્મવિશ્વાસમાં વધારો.","અહંકાર, પિતા/ઉપરી સાથે મતભેદ, આંખ-માથાનો દુખાવો, કામમાં અડચણ.","રવિવારનું વ્રત, સવારે સૂર્ય દર્શન, રત્ન માણેક (જ્યોતિષીની સલાહ પછી જ)."],
+["મનની શાંતિ, પ્રવાસ, માતાનો સાથ.","મનમાં બેચેની, ચિંતા, ઊંઘ ઓછી, માતાની તબિયતની ચિંતા.","સોમવારનું વ્રત, ચાંદી/દૂધનું દાન, રત્ન મોતી (સલાહ પછી)."],
+["હિંમત, જમીન-મકાન, ભાઈઓનો સાથ.","ગુસ્સો, અકસ્માત-ઈજાનો ભય, જમીન વિવાદ, ઉતાવળ.","મંગળવારનું વ્રત, રક્તદાન, રત્ન પરવાળા (સલાહ પછી)."],
+["બુદ્ધિ, વેપાર, વાણી અને અભ્યાસમાં સફળતા.","ગેરસમજ, વેપારમાં નુકસાન, ત્વચા-ચેતાતંત્રની તકલીફ.","બુધવારનું વ્રત, ગાયને લીલો ચારો, રત્ન પન્ના (સલાહ પછી)."],
+["ધન, સંતાન, જ્ઞાન, ભાગ્યવૃદ્ધિ, શુભ કાર્ય.","ખોટા ખર્ચ, નિર્ણયમાં ભૂલ, વજન-લિવરની તકલીફ, વડીલ સાથે અણબનાવ.","ગુરુવારનું વ્રત, કેસર તિલક, ગુરુજનોની સેવા, રત્ન પુખરાજ (સલાહ પછી)."],
+["સુખ-સગવડ, દાંપત્ય સુખ, કલા અને વાહન લાભ.","વધુ ખર્ચ, સંબંધોમાં તણાવ, ભોગ-વિલાસ તરફ ઝોક.","શુક્રવારનું વ્રત, સ્ત્રીઓનું સન્માન, રત્ન હીરો/ઓપલ (સલાહ પછી)."],
+["મહેનતનું ફળ, સ્થિરતા, નોકરી-વ્યવસાયમાં પ્રગતિ.","વિલંબ, થાક, સાંધા-કમરનો દુખાવો, ચિંતા, જવાબદારીનો બોજ.","શનિવારનું વ્રત, પીપળે દીવો, હનુમાન ચાલીસા. નીલમ વગર સલાહે ન પહેરવો."],
+["અચાનક લાભ, વિદેશ-ટેકનોલોજીમાં તક.","ભ્રમ, ખોટા નિર્ણય, છેતરપિંડીનો ભય, માનસિક ગૂંચવણ.","શનિવારે દાન, દુર્ગા ઉપાસના, સ્વચ્છતા અને સાદગી."],
+["આધ્યાત્મિક પ્રગતિ, શત્રુ પર વિજય.","એકલતા, અચાનક અડચણ, ચામડી-પેટની તકલીફ, ઉદાસીનતા.","ગણેશ પૂજા, કાળા-સફેદ વસ્ત્રનું દાન, ધ્યાન."]];
+const DO=[8,5,0,1,2,7,4,6,3],DY=[7,20,6,10,7,18,16,19,17],YD=365.25*864e5,SH=["સૂ","ચં","મં","બુ","ગુ","શુ","શ","રા","કે"];
+/* ✅ અપડેટેડ CITY લિસ્ટ — બધા ગામો અને શહેરો */
+const CITY={"ભુજ":[23.25,69.67],"માંડવી":[22.83,69.35],"કોડાય":[22.79,69.42],"ગઢસીસા":[23.08,69.53],"અંજાર":[23.11,70.03],"મુન્દ્રા":[22.84,69.72],"ગાંધીધામ":[23.08,70.13],"ભચાઉ":[23.30,70.34],"રાપર":[23.57,70.63],"નખત્રાણા":[23.35,69.27],"અબડાસા":[23.83,68.87],"લખપત":[23.83,68.77],"કેરા":[23.22,69.81],"બલદિયા":[23.34,69.63],"માનકુવા":[23.29,69.60],"અહમદાવાદ":[23.02,72.57],"રાજકોટ":[22.30,70.80],"વડોદરા":[22.31,73.18],"મુંબઈ":[19.08,72.88],"ઈન્દોર":[22.72,75.86],"રાયપુર":[21.15,81.63],"અન્ય (હાથે લખો)":[0,0]};
+const jd=d=>d.getTime()/864e5+2440587.5;
+function sE(M,e){M=n360(M);let E=M+e/R*S(M)*(1+e*C(M));for(let i=0;i<8;i++)E-=(E-e/R*S(E)-M)/(1-e*C(E));return E}
+function hel(p){let[N,i,w,a,e,M]=p,E=sE(M,e),x=a*(C(E)-e),y=a*Math.sqrt(1-e*e)*S(E),v=Math.atan2(y,x)/R,u=v+w,r=Math.hypot(x,y);
+return[r*(C(N)*C(u)-S(N)*S(u)*C(i)),r*(S(N)*C(u)+C(N)*S(u)*C(i)),r*S(u)*S(i)]}
+const ay=j=>23.853+0.0139697*((j-2451545)/365.25);
+function pos(dt){const j=jd(dt),d=j-2451543.5,
+sun=[0,0,282.9404+4.70935e-5*d,1,.016709-1.151e-9*d,356.047+.9856002585*d],
+mo=[125.1228-.0529538083*d,5.1454,318.0634+.1643573223*d,60.2666,.0549,115.3654+13.0649929509*d],
+pl={ma:[49.5574+2.11081e-5*d,1.8497-1.78e-8*d,286.5016+2.92961e-5*d,1.523688,.093405+2.516e-9*d,18.6021+.5240207766*d],
+me:[48.3313+3.24587e-5*d,7.0047+5e-8*d,29.1241+1.01444e-5*d,.387098,.205635+5.59e-10*d,168.6562+4.0923344368*d],
+ju:[100.4542+2.76854e-5*d,1.303-1.557e-7*d,273.8777+1.64505e-5*d,5.20256,.048498+4.469e-9*d,19.895+.0830853001*d],
+ve:[76.6799+2.4659e-5*d,3.3946+2.75e-8*d,54.891+1.38374e-5*d,.72333,.006773-1.302e-9*d,48.0052+1.6021302244*d],
+sa:[113.6634+2.3898e-5*d,2.4886-1.081e-7*d,339.3939+2.97661e-5*d,9.55475,.055546-9.499e-9*d,316.967+.0334442282*d]};
+const sg=hel(sun),sl=Math.atan2(sg[1],sg[0])/R,Ms=sun[5],Ls=Ms+sun[2],Mj=pl.ju[5],Mt=pl.sa[5];
+const g=k=>{const h=hel(pl[k]);return n360(Math.atan2(h[1]+sg[1],h[0]+sg[0])/R)};
+const mg=hel(mo);let ml=Math.atan2(mg[1],mg[0])/R;const Mm=mo[5],Lm=Mm+mo[2]+mo[0],D=Lm-Ls,F=Lm-mo[0];
+ml+=-1.274*S(Mm-2*D)+.658*S(2*D)-.186*S(Ms)-.059*S(2*Mm-2*D)-.057*S(Mm-2*D+Ms)+.053*S(Mm+2*D)+.046*S(2*D-Ms)+.041*S(Mm-Ms)-.035*S(D)-.031*S(Mm+Ms)-.015*S(2*F-2*D)+.011*S(Mm-4*D);
+let ju=g("ju")-.332*S(2*Mj-5*Mt-67.6)-.056*S(2*Mj-2*Mt+21)+.042*S(3*Mj-5*Mt+21)-.036*S(Mj-2*Mt)+.022*C(Mj-Mt)+.023*S(2*Mj-3*Mt+52)-.016*S(Mj-5*Mt-69),
+sa=g("sa")+.812*S(2*Mj-5*Mt-67.6)-.229*C(2*Mj-4*Mt-2)+.119*S(Mj-2*Mt-3)+.046*S(2*Mj-6*Mt-69)+.014*S(Mj-3*Mt+32);
+const ra=n360(mo[0]),a=ay(j);
+return[sl,ml,g("ma"),g("me"),ju,g("ve"),sa,ra,ra+180].map(x=>n360(x-a))}
+function lagna(p,utc){const j=utc/864e5+2440587.5,T=(j-2451545)/36525,
+th=n360(280.46061837+360.98564736629*(j-2451545)+p.lo),e=23.4392911-.0130042*T;
+return n360(Math.atan2(C(th),-(S(th)*C(e)+Math.tan(p.la*R)*S(e)))/R-ay(j))}
+function birth(p){const[y,mo,d]=p.d.split("-").map(Number),[h,mi]=p.t.split(":").map(Number);return Date.UTC(y,mo-1,d,h,mi)-p.z*36e5}
+
+let L=[],cur=0,ref=0,edit=-1,F=null,T=0;
+const MJ=[4,6,7,8];
+try{L=JSON.parse(localStorage.getItem("gp")||"[]");cur=+localStorage.getItem("gc")||0}catch(e){}
+
+const $=i=>document.getElementById(i),sv=()=>{try{localStorage.setItem("gp",JSON.stringify(L));localStorage.setItem("gc",cur)}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const TITHI = ["પ્રતિપદા","દ્વિતીયા","તૃતીયા","ચતુર્થી","પંચમી","ષષ્ઠી","સપ્તમી","અષ્ટમી","નવમી","દશમી","એકાદશી","દ્વાદશી","ત્રયોદશી","ચતુર્દશી","પૂર્ણિમા"];
+const TITHI_K = ["પ્રતિપદા","દ્વિતીયા","તૃતીયા","ચતુર્થી","પંચમી","ષષ્ઠી","સપ્તમી","અષ્ટમી","નવમી","દશમી","એકાદશી","દ્વાદશી","ત્રયોદશી","ચતુર્દશી","અમાસ"];
+const CHOGH_DAY = [
+  ["ઉદ્વેગ","ચલ","લાભ","અમૃત","કાળ","શુભ","રોગ","ઉદ્વેગ"],
+  ["અમૃત","કાળ","શુભ","રોગ","ઉદ્વેગ","ચલ","લાભ","અમૃત"],
+  ["રોગ","ઉદ્વેગ","ચલ","લાભ","અમૃત","કાળ","શુભ","રોગ"],
+  ["લાભ","અમૃત","કાળ","શુભ","રોગ","ઉદ્વેગ","ચલ","લાભ"],
+  ["શુભ","રોગ","ઉદ્વેગ","ચલ","લાભ","અમૃત","કાળ","શુભ"],
+  ["ચલ","લાભ","અમૃત","કાળ","શુભ","રોગ","ઉદ્વેગ","ચલ"],
+  ["કાળ","શુભ","રોગ","ઉદ્વેગ","ચલ","લાભ","અમૃત","કાળ"]
+];
+const CHOGH_NIGHT = [
+  ["શુભ","અમૃત","ચલ","રોગ","કાળ","લાભ","ઉદ્વેગ","શુભ"],
+  ["ચલ","રોગ","કાળ","લાભ","ઉદ્વેગ","શુભ","અમૃત","ચલ"],
+  ["કાળ","લાભ","ઉદ્વેગ","શુભ","અમૃત","ચલ","રોગ","કાળ"],
+  ["ઉદ્વેગ","શુભ","અમૃત","ચલ","રોગ","કાળ","લાભ","ઉદ્વેગ"],
+  ["અમૃત","ચલ","રોગ","કાળ","લાભ","ઉદ્વેગ","શુભ","અમૃત"],
+  ["રોગ","કાળ","લાભ","ઉદ્વેગ","શુભ","અમૃત","ચલ","રોગ"],
+  ["લાભ","ઉદ્વેગ","શુભ","અમૃત","ચલ","રોગ","કાળ","લાભ"]
+];
+const CHOGH_INFO = {
+  "અમૃત": "<span class='G'>શુભ</span> • બધા કાર્યો માટે ઉત્તમ • <span class='yatra-good'>🚗 યાત્રા સારી</span>",
+  "શુભ": "<span class='G'>શુભ</span> • લગ્ન, ધાર્મિક કાર્ય • <span class='yatra-good'>🚗 યાત્રા સારી</span>",
+  "લાભ": "<span class='G'>શુભ</span> • વ્યાપાર, ધન, શિક્ષણ • <span class='yatra-good'>🚗 યાત્રા શ્રેષ્ઠ</span>",
+  "ચલ": "<span class='Y'>મધ્યમ</span> • પ્રવાસ, વાહન ખરીદી • <span class='yatra-good'>🚗 યાત્રા શ્રેષ્ઠ</span>",
+  "ઉદ્વેગ": "<span class='B'>અશુભ</span> • ચિંતા, ટાળો • <span class='yatra-bad'>🚫 યાત્રા ટાળો</span>",
+  "રોગ": "<span class='B'>અશુભ</span> • રોગ, મુહૂર્ત ટાળો • <span class='yatra-bad'>🚫 યાત્રા ટાળો</span>",
+  "કાળ": "<span class='B'>અતિ અશુભ</span> • કોઈ શુભ કાર્ય ન કરો • <span class='yatra-bad'>🚫 યાત્રા ટાળો</span>"
+};
+const HORA_PLANETS = ["સૂર્ય","શુક્ર","બુધ","ચંદ્ર","શનિ","ગુરુ","મંગળ"];
+const HORA_INFO = {
+  "સૂર્ય": "☀️ સરકારી કામ, આત્મવિશ્વાસ • <span class='yatra-mid'>🚗 યાત્રા મધ્યમ</span>",
+  "ચંદ્ર": "🌙 મન, લાગણી, પ્રવાસ • <span class='yatra-good'>🚗 યાત્રા સારી</span>",
+  "મંગળ": "🔥 હિંમત, પણ લગ્ન ટાળો • <span class='yatra-bad'>🚫 યાત્રા ટાળો</span>",
+  "બુધ": "💚 વેપાર, વાણી, અભ્યાસ • <span class='yatra-good'>🚗 યાત્રા શ્રેષ્ઠ</span>",
+  "ગુરુ": "🌟 શુભ • લગ્ન, ધાર્મિક • <span class='yatra-good'>🚗 યાત્રા સારી</span>",
+  "શુક્ર": "💎 કલા, સૌંદર્ય, દાંપત્ય • <span class='yatra-good'>🚗 યાત્રા શ્રેષ્ઠ</span>",
+  "શનિ": "⚫ વિલંબ, ટાળો • <span class='yatra-bad'>🚫 યાત્રા ટાળો</span>"
+};
+const WEEKDAY_LORDS = ["સૂર્ય","ચંદ્ર","મંગળ","બુધ","ગુરુ","શુક્ર","શનિ"];
+
+function sunRiseSet(date, lat, lon, tz) {
+  const d = new Date(date);
+  const start = new Date(d.getFullYear(), 0, 0);
+  const diff = d - start;
+  const oneDay = 1000 * 60 * 60 * 24;
+  const dayOfYear = Math.floor(diff / oneDay);
+  const decl = 23.45 * Math.sin(2 * Math.PI / 365 * (dayOfYear - 81)) * R;
+  const latRad = lat * R;
+  const cosH = -Math.tan(latRad) * Math.tan(decl);
+  if (cosH < -1 || cosH > 1) return null;
+  const H = Math.acos(cosH) / R;
+  const B = 2 * Math.PI * (dayOfYear - 81) / 364;
+  const eqtime = 9.87 * Math.sin(2*B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+  const solarNoon = 12 - eqtime/60 - lon/15 + tz;
+  const sunrise = solarNoon - H/15;
+  const sunset = solarNoon + H/15;
+  const rise = new Date(d.getFullYear(), d.getMonth(), d.getDate(), Math.floor(sunrise), Math.round((sunrise%1)*60));
+  const set = new Date(d.getFullYear(), d.getMonth(), d.getDate(), Math.floor(sunset), Math.round((sunset%1)*60));
+  return {rise, set};
+}
+
+const YATRA_GOOD_CHOGH = ["અમૃત","શુભ","લાભ","ચલ"];
+const YATRA_GOOD_HORA  = ["ચંદ્ર","બુધ","શુક્ર","ગુરુ"];
+
+function panchang(p, t) {
+  const d = new Date(t);
+  const wd = d.getDay();
+  const sr = sunRiseSet(d, p.la, p.lo, p.z);
+  if (!sr) { $("pan").innerHTML = "આ સ્થળે સૂર્યોદય/સૂર્યાસ્ત ગણી શકાય નહીં."; return; }
+  const {rise, set} = sr;
+  const nextDay = new Date(d);
+  nextDay.setDate(d.getDate() + 1);
+  const nr = sunRiseSet(nextDay, p.la, p.lo, p.z);
+  const nextRise = nr ? nr.rise : new Date(set.getTime() + 12*3600*1000);
+  const brahma = new Date(rise.getTime() - 96*60*1000);
+
+  const tp = pos(new Date(t));
+  const sunLon = tp[0], moonLon = tp[1];
+  const diff = (moonLon - sunLon + 360) % 360;
+  const tithiIdx = Math.floor(diff / 12) % 30;
+  let tithiName, paksha;
+  if (tithiIdx < 15) { tithiName = TITHI[tithiIdx]; paksha = "શુક્લ"; }
+  else { tithiName = TITHI_K[tithiIdx - 15]; paksha = "કૃષ્ણ"; }
+
+  const dayDur = set - rise;
+  const nightDur = nextRise - set;
+  const dayParts = [], nightParts = [];
+  for (let i = 0; i < 8; i++) {
+    const start = new Date(rise.getTime() + dayDur * i / 8);
+    const end = new Date(rise.getTime() + dayDur * (i+1) / 8);
+    dayParts.push({start, end, name: CHOGH_DAY[wd][i]});
+  }
+  for (let i = 0; i < 8; i++) {
+    const start = new Date(set.getTime() + nightDur * i / 8);
+    const end = new Date(set.getTime() + nightDur * (i+1) / 8);
+    nightParts.push({start, end, name: CHOGH_NIGHT[wd][i]});
+  }
+
+  const dayHoraDur = dayDur / 12;
+  const nightHoraDur = nightDur / 12;
+  const weekdayLord = WEEKDAY_LORDS[wd];
+  const lordIdx = HORA_PLANETS.indexOf(weekdayLord);
+  const horas = [];
+  for (let i = 0; i < 12; i++) {
+    const start = new Date(rise.getTime() + dayHoraDur * i);
+    const end = new Date(rise.getTime() + dayHoraDur * (i+1));
+    horas.push({start, end, planet: HORA_PLANETS[(lordIdx + i) % 7]});
+  }
+  for (let i = 0; i < 12; i++) {
+    const start = new Date(set.getTime() + nightHoraDur * i);
+    const end = new Date(set.getTime() + nightHoraDur * (i+1));
+    horas.push({start, end, planet: HORA_PLANETS[(lordIdx + 12 + i) % 7]});
+  }
+
+  const allChogh = [...dayParts, ...nightParts];
+  let curChogh = null, curHora = null;
+  allChogh.forEach(c => {
+    if (t >= c.start.getTime() && t < c.end.getTime()) curChogh = c;
+  });
+  horas.forEach(h => {
+    if (t >= h.start.getTime() && t < h.end.getTime()) curHora = h;
+  });
+
+  const fmt = d => d.toLocaleTimeString('gu-IN', {hour:'2-digit', minute:'2-digit'});
+  const fmtEnd = d => d.toLocaleTimeString('gu-IN', {hour:'2-digit', minute:'2-digit'});
+
+  let html = `<div class="sunbox">
+    <b>📅 ${d.toLocaleDateString('gu-IN')}</b> • ${["રવિ","સોમ","મંગળ","બુધ","ગુરુ","શુક્ર","શનિ"][wd]}<br>
+    ☀️ સૂર્યોદય: <b>${fmt(rise)}</b> &nbsp; 🌇 સૂર્યાસ્ત: <b>${fmt(set)}</b><br>
+    🕉️ બ્રહ્મ મુહૂર્ત: <b>${fmt(brahma)}</b> થી <b>${fmt(rise)}</b><br>
+    🌙 તિથિ: <b>${paksha} ${tithiName}</b>
+  </div>`;
+
+  if (curChogh || curHora) {
+    const cg = curChogh ? curChogh.name : "—";
+    const hr = curHora ? curHora.planet : "—";
+    const yChogh = curChogh && YATRA_GOOD_CHOGH.includes(cg);
+    const yHora  = curHora  && YATRA_GOOD_HORA.includes(hr);
+    let yatraMsg;
+    if (yChogh && yHora) yatraMsg = "<span class='yatra-good'>🚗 યાત્રા માટે ઉત્તમ સમય! હવે નીકળી શકાય.</span>";
+    else if (yChogh || yHora) yatraMsg = "<span class='yatra-mid'>🚗 યાત્રા થોડી સારી છે, પણ આખું શ્રેષ્ઠ નથી.</span>";
+    else yatraMsg = "<span class='yatra-bad'>🚫 યાત્રા ટાળો. બીજો સારો સમય જુઓ.</span>";
+
+    html += `<div class="now-box">
+      <div class="title">🕐 અત્યારે ચાલુ <span class="badge">LIVE</span></div>
+      <div class="item">⏳ ચોઘડિયું: <b>${cg}</b> ${curChogh ? `<small>(${fmt(curChogh.start)} – ${fmtEnd(curChogh.end)})</small>` : ""}</div>
+      <div class="item">⏰ હોરા: <b>${hr}</b> ${curHora ? `<small>(${fmt(curHora.start)} – ${fmtEnd(curHora.end)})</small>` : ""}</div>
+      <div class="item" style="margin-top:4px">${yatraMsg}</div>
+    </div>`;
+  }
+
+  html += `<h4 style="margin:10px 0 4px;color:var(--primary)">⏳ ચોઘડિયા</h4>
+  <div style="overflow-x:auto"><table>
+  <tr><th>સમય</th><th>ચોઘડિયું</th><th>ફળ</th></tr>`;
+  allChogh.forEach(c => {
+    const isNow = (t >= c.start.getTime() && t < c.end.getTime());
+    html += `<tr class="${isNow ? 'now-row' : ''}"><td>${fmt(c.start)} - ${fmt(c.end)}${isNow ? ' <span class="badge">ચાલુ</span>' : ''}</td><td><b>${c.name}</b></td><td>${CHOGH_INFO[c.name]||""}</td></tr>`;
+  });
+  html += `</table></div>`;
+
+  html += `<h4 style="margin:10px 0 4px;color:var(--primary)">⏰ હોરા</h4>
+  <div style="overflow-x:auto"><table>
+  <tr><th>સમય</th><th>ગ્રહ</th><th>ફળ</th></tr>`;
+  horas.forEach(h => {
+    const isNow = (t >= h.start.getTime() && t < h.end.getTime());
+    html += `<tr class="${isNow ? 'now-row' : ''}"><td>${fmt(h.start)} - ${fmt(h.end)}${isNow ? ' <span class="badge">ચાલુ</span>' : ''}</td><td><b>${h.planet}</b></td><td>${HORA_INFO[h.planet]||""}</td></tr>`;
+  });
+  html += `</table></div>`;
+
+  html += `<div style="background:#fff3e0;padding:10px;border-radius:12px;margin-top:10px;border-left:4px solid #ef6c00;font-size:13px;line-height:1.8">
+    <b style="color:#e65100">🚗 યાત્રા માટે શ્રેષ્ઠ સમય</b><br>
+    <b>ચોઘડિયામાં:</b> <span class="yatra-good">ચલ • લાભ • અમૃત • શુભ</span><br>
+    <b>હોરામાં:</b> <span class="yatra-good">ચંદ્ર • બુધ • શુક્ર • ગુરુ</span><br>
+    <b>ટાળો:</b> <span class="yatra-bad">કાળ • રોગ • ઉદ્વેગ (ચોઘડિયા) | શનિ • મંગળ (હોરા)</span>
+  </div>`;
+
+  $("pan").innerHTML = html;
+}
+
+function emptyUI(){
+  $("nat").innerHTML = `<div class="empty-msg">
+    <div class="big">👤</div>
+    <b>કોઈ પ્રોફાઇલ નથી</b><br>
+    ઉપર <b>➕ નવી</b> દબાવીને<br>તમારી પ્રોફાઇલ ઉમેરો 🙏
+  </div>`;
+  $("ch").innerHTML = "";
+  $("ss").innerHTML = "";
+  $("ds").innerHTML = "";
+  $("sum").innerHTML = "";
+  $("out").innerHTML = "";
+}
+
+function ui(){
+  if(!L.length){
+    $("ps").innerHTML = '<option>-- પ્રોફાઇલ નથી --</option>';
+    return;
+  }
+  $("ps").innerHTML = L.map((p,i)=>`<option value="${i}" ${i==cur?"selected":""}>${esc(p.n)}</option>`).join("");
+  $("ps").onchange = ()=>{cur=+$("ps").value;sv();go()};
+}
+$("fc").innerHTML = Object.keys(CITY).map(c=>`<option>${c}</option>`).join("");
+function city(){const v=CITY[$("fc").value];if(v[0]){$("fla").value=v[0];$("flo").value=v[1]}}
+function openF(e){
+  if(e && !L.length){alert("પહેલા પ્રોફાઇલ ઉમેરો 🙏");return}
+  edit=e?cur:-1;
+  const p=e?L[cur]:{n:"",d:"",t:"",la:23.25,lo:69.67,z:5.5};
+  $("ft").textContent=e?"✏️ સુધારો":"➕ નવી પ્રોફાઇલ";
+  $("fn").value=p.n;$("fd").value=p.d;$("fti").value=p.t;
+  $("fla").value=p.la;$("flo").value=p.lo;$("ftz").value=p.z;
+  const key=Object.keys(CITY).find(k=>Math.abs(CITY[k][0]-p.la)<0.02&&Math.abs(CITY[k][1]-p.lo)<0.02);
+  $("fc").value = key||"અન્ય (હાથે લખો)";
+  $("m").style.display="block";
+}
+function save(){
+  const p={n:$("fn").value.trim(),d:$("fd").value,t:$("fti").value,la:+$("fla").value,lo:+$("flo").value,z:+$("ftz").value};
+  if(!p.n||!p.d||!p.t||!isFinite(p.la)||!isFinite(p.lo)||!isFinite(p.z)){alert("બધી વિગત ભરો 🙏");return}
+  if(edit>=0)L[edit]=p;else{L.push(p);cur=L.length-1}
+  sv();$("m").style.display="none";ui();go();
+}
+function del(){
+  if(!L.length){alert("કોઈ પ્રોફાઇલ નથી");return}
+  if(confirm(L[cur].n+" ને ડિલીટ કરવા છે?")){
+    L.splice(cur,1);
+    cur=Math.max(0,Math.min(cur,L.length-1));
+    sv();ui();
+    if(L.length) go(); else emptyUI();
+  }
+}
+function now(){
+  const d=new Date(Date.now()-new Date().getTimezoneOffset()*6e4);
+  $("dt").value=d.toISOString().slice(0,16);
+  if(L.length) go(); else emptyUI();
+}
+
+const rz=(i,t)=>Math.floor(pos(new Date(t))[i]/30);
+function span(i,t0){const r=rz(i,t0),st=[.1,1,1,1,4,1,5,8,8][i]*864e5,lim=[40,70,300,150,700,200,1100,800,800][i]*864e5;
+let a=t0,b=t0;while(t0-a<lim&&rz(i,a-st)==r)a-=st;while(b-t0<lim&&rz(i,b+st)==r)b+=st;
+let lo=a-st,hi=a;for(let k=0;k<14;k++){const m=(lo+hi)/2;rz(i,m)==r?hi=m:lo=m}a=hi;
+lo=b;hi=b+st;for(let k=0;k<14;k++){const m=(lo+hi)/2;rz(i,m)==r?lo=m:hi=m}b=lo;return[a,b]}
+const fd=t=>{const d=new Date(t);return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear()},
+dur=ms=>{ms=Math.max(0,ms);const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),mi=Math.floor(ms%36e5/6e4);
+if(d>=60)return Math.round(d/30.4)+" મહિના";
+if(d>0)return d+" દિવસ "+h+" કલાક";
+if(h>0)return h+" કલાક "+mi+" મિનિટ";
+return mi+" મિનિટ";};
+
+function go(){
+  if(!L.length){emptyUI();return}
+  const p=L[cur];
+  if(!$("dt").value){now();return}
+  const t=new Date($("dt").value).getTime(),b=birth(p),np=pos(new Date(b)),lg=lagna(p,b),
+  base=ref?Math.floor(np[1]/30):Math.floor(lg/30);
+  $("t0").className=ref?"":"on";$("t1").className=ref?"on":"";
+  $("nat").innerHTML=`🌅 લગ્ન: <b>${RA[Math.floor(lg/30)]}</b> &nbsp; 🌙 રાશિ: <b>${RA[Math.floor(np[1]/30)]}</b><br>⭐ નક્ષત્ર: <b>${NK[Math.floor(np[1]/(360/27))]}</b>`;
+  const tp=pos(new Date(t));
+  $("tm").className=T?"":"on";$("tn").className=T?"on":"";
+  let g=0,A=[];
+  const pn=pos(new Date(t+864e5)),pb=pos(new Date(t-864e5));
+  const vk=i=>((pn[i]-pb[i]+540)%360)-180<0;
+  tp.forEach((x,i)=>{
+    if((MJ.includes(i)?0:1)!=T)return;
+    const r=Math.floor(x/30),hs=(r-base+12)%12+1,ok=P[i][2].includes(hs);
+    ok&&g++;
+    const[f,to]=span(i,t),pc=Math.min(100,Math.max(0,(t-f)/(to-f)*100)).toFixed(0);
+    A.push({r:to-t,h:`<div class="pl ${ok?'gd':'bd'}"><div class="ph"><span>${P[i][0]} ${P[i][1]}</span><span class="${ok?"G":"B"}">${ok?"✅ સારું":"🔴 ખરાબ"}</span></div><div class="pb">
+    📍 ${RA[r]} રાશિ • ${hs}મું ઘર ${i<2?"":vk(i)?"• ↩️ વક્રી":"• ▶️ માર્ગી"}<br>
+    <div class="bar"><i style="width:${pc}%"></i></div>${pc}% પૂર્ણ<br>
+    📅 ${fd(f)} થી ${fd(to)}<br>⏳ બાકી: ${dur(to-t)}
+    <br><button onclick="var e=this.nextElementSibling;e.style.display=e.style.display=='block'?'none':'block'">📖 વિગત અને ઉપાય</button>
+    <div class="dt"><b>${hs}મું ઘર:</b> ${HM[hs-1]} ક્ષેત્રે ${ok?"સારું ફળ મળવાની શક્યતા. 👍 તકનો લાભ લો.":"સાવધાની જરૂરી. ⚠️ ઉતાવળા નિર્ણય ટાળો."}<br><br>${ok?"👍":"⚠️"} ${ok?X[i][0]:X[i][1]}<br><b>🙏 ઉપાય:</b> ${P[i][3]}.<br>${X[i][2]}<br>ઉપાય શ્રદ્ધા માટે છે. આરોગ્ય-નાણાં બાબતે નિષ્ણાતની સલાહ લો.</div></div></div>`});
+  });
+  $("sum").innerHTML=`<div class="row"><button style="background:#2e7d32" onclick="fl(1)">✅ સારું (${g})</button><button class="r" onclick="fl(0)">🔴 ખરાબ (${A.length-g})</button></div>`;
+  $("out").innerHTML=A.sort((x,y)=>x.r-y.r).map(x=>x.h).join("");
+  $("out").className=F===1?"fg":F===0?"fb":"";
+  $("sum").children[0].children[0].style.opacity=F===0?.4:1;
+  $("sum").children[0].children[1].style.opacity=F===1?.4:1;
+  panchang(p, t);
+  extra(b,np,lg,t,tp);
+}
+
+function extra(b,np,lg,t,tp){
+  const m=Math.floor(np[1]/30),sr=Math.floor(tp[6]/30),df=(sr-m+12)%12,e=fd(span(6,t)[1]);
+  let s;
+  if([11,0,1].includes(df))s=`🔱 <b>સાડાસાતી ચાલુ છે</b> (${["પ્રથમ","બીજું","ત્રીજું"][df==11?0:df+1]} ચરણ)<br>શનિ હાલ ${RA[sr]} રાશિમાં છે, ${e} સુધી.`;
+  else if(df==3||df==7)s=`⚠️ <b>નાની પનોતી ચાલુ છે</b> (ચંદ્રથી ${df==3?"ચોથા":"આઠમા"} ઘરે શનિ)<br>શનિ હાલ ${RA[sr]} રાશિમાં છે, ${e} સુધી.`;
+  else s=`✅ હાલ સાડાસાતી કે નાની પનોતી નથી.<br>શનિ ${RA[sr]} રાશિમાં, ${e} સુધી.`;
+  $("ss").innerHTML=s+"<br>🙏 "+P[6][3]+"<br><br><b>📅 સાડાસાતીના સમયગાળા:</b>"+ssList(m,t).map(([a,z])=>`<div style="padding:4px;${t>=a&&t<=z?"background:#e0f2f1;font-weight:bold":""}">${fd(a)} થી ${fd(z)} ${t>=a&&t<=z?"(ચાલુ)":t>z?"(પૂરી)":"(આગામી)"}</div>`).join("");
+  const nk=360/27,x=np[1],o=Math.floor(x/nk)%9,fr=1-(x%nk)/nk;
+  let st=b-(1-fr)*DY[o]*YD,cur="",rows="";
+  for(let k=0;k<9;k++){
+    const i=(o+k)%9,en=st+DY[i]*YD,on=t>=st&&t<en;
+    if(on){
+      let as=st,ah="";
+      for(let q=0;q<9;q++){
+        const j=(i+q)%9,ae=as+DY[i]*DY[j]/120*YD;
+        if(t>=as&&t<ae)ah=`અંતર્દશા: <b>${P[DO[j]][1]}</b> (${fd(as)} – ${fd(ae)})`;
+        as=ae;
+      }
+      cur=`<div style="background:#e0f2f1;padding:8px;border-radius:8px">મહાદશા: <b>${P[DO[i]][1]}</b> (${fd(st)} – ${fd(en)})<br>${ah}</div>`;
+    }
+    rows+=`<tr style="${on?"font-weight:bold;background:#e0f2f1":""}"><td>${P[DO[i]][0]} ${P[DO[i]][1]}</td><td>${fd(st)}</td><td>${fd(en)}</td></tr>`;
+    st=en;
+  }
+  $("ds").innerHTML=cur+`<table style="width:100%;margin-top:6px;font-size:14px"><tr><th align=left>દશા</th><th align=left>થી</th><th align=left>સુધી</th></tr>${rows}</table>`;
+  const l=Math.floor(lg/30),pl=Array.from({length:12},()=>[]);
+  np.forEach((v,i)=>pl[(Math.floor(v/30)-l+12)%12].push(SH[i]));
+  const c=[[200,95],[100,45],[45,100],[100,200],[45,300],[100,355],[200,305],[300,355],[355,300],[300,200],[355,100],[300,45]];
+  let v=`<svg viewBox="0 0 400 400" style="width:100%;max-width:380px"><g stroke="#00796b" fill="none" stroke-width="2"><rect x="2" y="2" width="396" height="396"/><path d="M2 2L398 398M398 2L2 398M200 2L2 200L200 398L398 200Z"/></g>`;
+  c.forEach((p,h)=>v+=`<text x="${p[0]}" y="${p[1]}" text-anchor="middle" font-size="14" fill="#d32f2f">${(l+h)%12+1}</text><text x="${p[0]}" y="${p[1]+20}" text-anchor="middle" font-size="16" font-weight="bold">${pl[h].join(" ")}</text>`);
+  $("ch").innerHTML=v+`</svg><div style="font-size:14px;margin-top:6px">લાલ આંકડો = રાશિ નંબર (1 મેષ … 12 મીન). ઉપરનું મધ્ય ખાનું = લગ્ન.</div>`;
+}
+
+function bk(){
+  if(!L.length){alert("કોઈ પ્રોફાઇલ નથી");return}
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(L)],{type:"application/json"}));
+  a.download="gochar-backup.json";a.click();
+}
+function rs(f){
+  const q=new FileReader();
+  q.onload=()=>{
+    try{
+      let n=0;
+      JSON.parse(q.result).forEach(p=>{
+        if(p.n&&p.d&&!L.some(o=>o.n==p.n&&o.d==p.d&&o.t==p.t)){L.push(p);n++}
+      });
+      sv();ui();go();
+      alert(n+" પ્રોફાઇલ ઉમેરાઈ ✅");
+    }catch(e){alert("ફાઇલ બરાબર નથી ❌")}
+  };
+  q.readAsText(f.files[0]);f.value="";
+}
+function ssList(m,t){
+  const st=30*864e5,on=x=>[11,0,1].includes((Math.floor(pos(new Date(x))[6]/30)-m+12)%12),o=[];
+  let a=null,l=null;
+  for(let x=t-45*YD;x<=t+35*YD;x+=st){
+    if(on(x)){if(a===null)a=x;l=x}
+    else if(a!==null&&x-l>400*864e5){o.push([a,l]);a=null}
+  }
+  if(a!==null)o.push([a,l]);
+  return o.map(([a,b])=>{
+    let lo=a-st,hi=a;
+    for(let k=0;k<10;k++){const c=(lo+hi)/2;on(c)?hi=c:lo=c}
+    a=hi;
+    lo=b;hi=b+st;
+    for(let k=0;k<10;k++){const c=(lo+hi)/2;on(c)?lo=c:hi=c}
+    return[a,lo];
+  }).filter(p=>p[0]>t-45*YD+40*864e5);
+}
+function fl(x){F=F===x?null:x;go()}
+
+ui();now();
+
+/* ══════════ PWA — Service Worker રજિસ્ટ્રેશન (Android) ══════════ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('✅ SW registered:', reg.scope))
+      .catch(err => console.log('❌ SW error:', err));
+  });
+}
+</script></body></html>
